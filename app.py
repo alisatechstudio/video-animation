@@ -364,6 +364,8 @@ if __name__ == "__main__":
     }
     import inspect
     sig = inspect.signature(demo.launch).parameters
+    if "ssr_mode" in sig:
+        launch_kwargs["ssr_mode"] = False
     if "theme" in sig:
         launch_kwargs["theme"] = gr.themes.Soft(primary_hue="indigo")
     if "css" in sig:
