@@ -44,10 +44,25 @@ from src.extractor import extract_frames
 from src.animator import process_frames
 from src.assembler import assemble_video
 
+# Support for Hugging Face ZeroGPU environments
+try:
+    import spaces
+except ImportError:
+    class _MockSpaces:
+        @staticmethod
+        def GPU(fn=None, *args, **kwargs):
+            if fn is not None and callable(fn):
+                return fn
+            def decorator(f):
+                return f
+            return decorator
+    spaces = _MockSpaces()
+
 # Pre-detect system hardware on startup
 HARDWARE = detect_hardware()
 
 
+@spaces.GPU
 def run_pipeline(
     youtube_url: Optional[str],
     uploaded_video: Optional[str],
