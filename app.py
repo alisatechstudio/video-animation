@@ -62,7 +62,28 @@ except ImportError:
 HARDWARE = detect_hardware()
 
 
-@spaces.GPU
+@spaces.GPU(duration=120)
+def gpu_stylize_frames(
+    frame_paths: list,
+    output_dir: Path,
+    preset_name: str,
+    intensity: float,
+    custom_prompt: Optional[str] = None,
+    seed: int = 42,
+    smoothing_factor: float = 0.15
+) -> list:
+    """ZeroGPU isolated stylization stage."""
+    return process_frames(
+        frame_paths=frame_paths,
+        output_dir=output_dir,
+        preset_name=preset_name,
+        intensity=intensity,
+        custom_prompt=custom_prompt,
+        seed=seed,
+        smoothing_factor=smoothing_factor
+    )
+
+
 def run_pipeline(
     youtube_url: Optional[str],
     uploaded_video: Optional[str],
@@ -152,16 +173,15 @@ def run_pipeline(
         total_frames = extraction.frame_count
 
         # Stage 3: AI Stylization
-        progress(0.42, desc=f"[Stage 3/4] Stylizing frames with {preset_name}...")
-        stylized_paths = process_frames(
+        progress(0.42, desc=f"[Stage 3/4] Stylizing frames with {preset_name} (GPU accelerated)...")
+        stylized_paths = gpu_stylize_frames(
             frame_paths=extraction.frame_paths,
             output_dir=session["stylized_frames"],
             preset_name=preset_name,
             intensity=intensity,
             custom_prompt=custom_prompt,
             seed=42,
-            smoothing_factor=0.15,
-            progress_callback=lambda p, msg: progress(0.42 + 0.45 * p, desc=f"[Stage 3/4] {msg}")
+            smoothing_factor=0.15
         )
 
         # Stage 4: Reassemble & Audio Muxing
@@ -191,6 +211,10 @@ def run_pipeline(
 """
         return str(trimmed_video), str(final_output_path), status_md, str(final_output_path)
 
+    except RuntimeError as e:
+        raise gr.Error(str(e))
+    except Exception as e:
+        raise gr.Error(f"Video processing error: {str(e)}")
     finally:
         # Automatic session cleanup of raw extracted PNG frames
         cleanup_session(session_root)
