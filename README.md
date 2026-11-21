@@ -1,3 +1,14 @@
+---
+title: Video Animation
+emoji: 🎬
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: 5.20.0
+app_file: app.py
+pinned: false
+---
+
 # 🎬 Local & Cloud YouTube to AI Animation Converter
 
 A modular web application that takes a YouTube video URL (or a local video file), transforms its frames into stylized AI animation, and reassembles the final video with the original audio track synchronized.

@@ -356,10 +356,17 @@ if __name__ == "__main__":
     demo, css_rules = build_app()
     server_port = int(os.environ.get("PORT", 7860))
     server_name = os.environ.get("HOST", "0.0.0.0")
-    demo.launch(
-        server_name=server_name,
-        server_port=server_port,
-        share=False,
-        theme=gr.themes.Soft(primary_hue="indigo"),
-        css=css_rules
-    )
+    
+    launch_kwargs = {
+        "server_name": server_name,
+        "server_port": server_port,
+        "share": False,
+    }
+    import inspect
+    sig = inspect.signature(demo.launch).parameters
+    if "theme" in sig:
+        launch_kwargs["theme"] = gr.themes.Soft(primary_hue="indigo")
+    if "css" in sig:
+        launch_kwargs["css"] = css_rules
+
+    demo.launch(**launch_kwargs)
