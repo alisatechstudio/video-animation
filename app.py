@@ -8,6 +8,25 @@ from pathlib import Path
 from typing import Optional, Tuple
 import gradio as gr
 
+# Hotfix for Gradio Client / Pydantic schema parsing bug (TypeError: argument of type 'bool' is not iterable)
+try:
+    import gradio_client.utils as client_utils
+    orig_get_type = client_utils.get_type
+    def safe_get_type(schema):
+        if not isinstance(schema, dict):
+            return "Any"
+        return orig_get_type(schema)
+    client_utils.get_type = safe_get_type
+
+    orig_json_schema = client_utils._json_schema_to_python_type
+    def safe_json_schema_to_python_type(schema, defs=None):
+        if not isinstance(schema, dict):
+            return "Any"
+        return orig_json_schema(schema, defs)
+    client_utils._json_schema_to_python_type = safe_json_schema_to_python_type
+except Exception:
+    pass
+
 from src.config import (
     STYLE_PRESETS,
     detect_hardware,
