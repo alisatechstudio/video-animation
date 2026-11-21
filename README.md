@@ -12,7 +12,12 @@ pinned: false
 
 # 🎬 Local & Cloud YouTube to AI Animation Converter
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alisatechstudio/video-animation/blob/main/colab.ipynb)
+
 A modular web application that takes a YouTube video URL (or a local video file), transforms its frames into stylized AI animation, and reassembles the final video with the original audio track synchronized.
+
+> [!TIP]
+> **Recommended Free Cloud Runner**: Click the **Open In Colab** badge above to launch this application on Google Colab with a **Free 15GB VRAM GPU**, high-speed unmetered YouTube downloading, and a public shareable URL with zero setup!
 
 ---
 

@@ -415,10 +415,13 @@ if __name__ == "__main__":
     server_port = int(os.environ.get("PORT", 7860))
     server_name = os.environ.get("HOST", "0.0.0.0")
     
+    import sys
+    share_flag = "--share" in sys.argv or os.environ.get("SHARE", "").lower() in ["1", "true"]
+
     launch_kwargs = {
         "server_name": server_name,
         "server_port": server_port,
-        "share": False,
+        "share": share_flag,
     }
     import inspect
     sig = inspect.signature(demo.launch).parameters
